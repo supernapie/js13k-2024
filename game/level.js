@@ -181,11 +181,11 @@ level.on('start', () => {
     // Update the textTiles
     textTiles = grid.map((row, y) => row.map((value, x) => ft({text: String(value), x: x * 40, y: y * 40})));
 
-    level.emit('color', {'c0': 'SeaGreen', 'c1': 'Aqua', 'c2': 'LightCoral', 'c3': 'Aqua', 'c13': 'SeaGreen'});
+    level.emit('color', {'c0': 'Aqua', 'c1': 'Seashell', 'c2': 'SandyBrown', 'c3': 'Seashell', 'c13': 'Aqua'});
 
     // restart the level on tap
     level.once('tap', () => {
-        level.emit('color', {'c0': 'Seashell', 'c1': 'Aqua', 'c2': 'LightCoral', 'c3': 'Aqua', 'c13': 'DarkSeaGreen'});
+        level.emit('color', {'c0': 'Aqua', 'c1': 'Seashell', 'c2': 'SandyBrown', 'c3': 'Seashell', 'c13': 'Coral'});
         level.once('tap', () => {
             level.machine.restart('level');
         });
