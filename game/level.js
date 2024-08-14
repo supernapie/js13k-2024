@@ -200,13 +200,13 @@ level.on('draw', e => {
             ctx.fillRect(x * 40, y * 40, 40, 40);
         }
     }
-    textTiles.forEach(row => row.forEach(
-        tile => {
-            let colors = level.last('color');
-            ctx.fillStyle = '#000000';
-            tile.draw(e);
-        }
-    ));
+/*    textTiles.forEach(row => row.forEach(*/
+        /*tile => {*/
+            /*let colors = level.last('color');*/
+            /*ctx.fillStyle = '#000000';*/
+            /*tile.draw(e);*/
+        /*}*/
+    /*));*/
 });
 
 export default level;
