@@ -4,15 +4,16 @@ import ft from './js/draw/text.js';
 let level = state();
 
 // a grid
-//let nRows = 52;
 let nRows = 14;
-//let nCols = 26;
 let nCols = 14;
 let grid = Array(nRows).fill(0).map(() => Array(nCols).fill(0));
 
 let textTiles = grid.map((row, y) => row.map((value, x) => ft({text: String(value), x: x * 40, y: y * 40})));
 
 level.on('start', () => {
+
+    nRows = 14;
+    nCols = 14;
 
     // Reset all to 0
     grid = Array(nRows).fill(0).map(() => Array(nCols).fill(0));
@@ -73,6 +74,10 @@ level.on('start', () => {
         return value !== 0 || !emptyCols[x] || !emptyCols[(x + 1) % nCols];
     }));
 
+    // update nRows and nCols
+    nRows = grid.length;
+    nCols = grid[0].length;
+
     // Replace all 13 with -1
     grid = grid.map(row => row.map(value => value === 13 ? -1 : value));
 
@@ -80,38 +85,23 @@ level.on('start', () => {
     // This is the starting point for the player
     let emptyRow = grid.findIndex(row => row.every(value => value === 0));
     let emptyCol = grid[0].findIndex((value, x) => grid.every(row => row[x] === 0));
-    grid[emptyRow][emptyCol] = 1;
-    let start = {x: emptyCol, y: emptyRow, rank: 1};
+    let start = {x: emptyCol, y: emptyRow, rank: 0};
 
-    // Replace all 0 which are not on the empty row or column with the orthogonal distance to the starting point
-    grid = grid.map((row, y) => row.map((value, x) => {
-        if (value === 0 && (x !== emptyCol && y !== emptyRow)) {
-            return Math.abs(x - emptyCol) + Math.abs(y - emptyRow);
-        } else {
-            return value;
-        }
-    }));
+    // change everything which isn't -1 to 0
+    grid = grid.map(row => row.map(value => value === -1 ? value : 0));
 
-    // Get coordinates of the largest number, but lower then    13
-    // This is the target for the player
-    let target = grid.reduce((acc, row, y) => {
-        let {rank, x} = row.reduce((acc, value, x) => {
-            if (value > acc.rank && value < 13) {
-                acc.rank = value;
-                acc.x = x;
-            }
-            return acc;
-        }, {rank: 0, x: 0});
-        if (rank > acc.rank) {
-            acc.rank = rank;
-            acc.x = x;
-            acc.y = y;
-        }
-        return acc;
-    }, {rank: 0, x: 0, y: 0});
+    // Switch rows and columns to make the start point the top left corner
+    while (start.y > 0) {
+        grid.push(grid.shift());
+        start.y--;
+    }
+    while (start.x > 0) {
+        grid.forEach(row => row.push(row.shift()));
+        start.x--;
+    }
 
-    console.log(start);
-    console.log(target);
+    // Add the start and target to the grid
+    grid[start.y][start.x] = 1;
 
     // Update the textTiles
     textTiles = grid.map((row, y) => row.map((value, x) => ft({text: String(value), x: x * 40, y: y * 40})));
