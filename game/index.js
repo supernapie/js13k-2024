@@ -6,7 +6,7 @@ import machine from './js/statemachine/machine.js';
 import level from './level.js';
 import menu from './menu.js';
 
-gg.emit('color', { fill: '#111214', bg: '#917865' });
+gg.emit('color', { stroke: 'Seashell', fill: 'Seashell', bg: 'SeaGreen' });
 
 let screens = machine(gg);
 screens.add('menu', menu);
