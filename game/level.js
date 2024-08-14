@@ -81,6 +81,7 @@ level.on('start', () => {
     let emptyRow = grid.findIndex(row => row.every(value => value === 0));
     let emptyCol = grid[0].findIndex((value, x) => grid.every(row => row[x] === 0));
     grid[emptyRow][emptyCol] = 1;
+    let start = {x: emptyCol, y: emptyRow, rank: 1};
 
     // Replace all 0 which are not on the empty row or column with the orthogonal distance to the starting point
     grid = grid.map((row, y) => row.map((value, x) => {
@@ -109,6 +110,7 @@ level.on('start', () => {
         return acc;
     }, {rank: 0, x: 0, y: 0});
 
+    console.log(start);
     console.log(target);
 
     // Update the textTiles
