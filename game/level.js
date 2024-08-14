@@ -183,12 +183,25 @@ level.on('start', () => {
 
     level.emit('color', {'c0': 'Aqua', 'c1': 'Seashell', 'c2': 'SandyBrown', 'c3': 'Seashell', 'c13': 'Aqua'});
 
-    // restart the level on tap
-    level.once('tap', () => {
-        level.emit('color', {'c0': 'Aqua', 'c1': 'Seashell', 'c2': 'SandyBrown', 'c3': 'Seashell', 'c13': 'Coral'});
-        level.once('tap', () => {
-            level.machine.restart('level');
-        });
+    level.on('tap', e => {
+        let {x, y} = e;
+        let gx = Math.floor(x / 40);
+        let gy = Math.floor(y / 40);
+        if (gx < 0 || gx >= nCols || gy < 0 || gy >= nRows) {
+            return;
+        }
+        let value = grid[gy][gx];
+        if (value === 0) {
+            grid[gy][gx] = 1;
+            return;
+        }
+        if (value === 13) {
+            level.off('tap');
+            level.emit('color', {'c0': 'Aqua', 'c1': 'Seashell', 'c2': 'SandyBrown', 'c3': 'Seashell', 'c13': 'Coral'});
+            level.once('tap', () => {
+                level.machine.restart('level');
+            });
+        }
     });
 });
 
