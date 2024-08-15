@@ -9,7 +9,7 @@ menu.on('start', () => {
     });
 });
 
-let menuText = ft({text: 'Place Seashells around The Tridecomino Coral.\nTo play: Tap!'});
+let menuText = ft({text: 'Place Seashells around\nThe Tridecomino Coral Reef.\nTo play: Tap!'});
 menu.on('draw', menuText.draw);
 
 export default menu;
