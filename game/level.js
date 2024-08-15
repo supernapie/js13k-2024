@@ -171,8 +171,8 @@ level.on('start', () => {
 
     level.on('tap', e => {
         let {x, y} = e;
-        let gx = Math.floor(x / 40);
-        let gy = Math.floor(y / 40);
+        let gx = Math.floor(x / 40) % nCols;
+        let gy = Math.floor(y / 40) % nRows;
         if (gx < 0 || gx >= nCols || gy < 0 || gy >= nRows) {
             return;
         }
@@ -192,15 +192,25 @@ level.on('start', () => {
     });
 });
 
+let offCanvas = new OffscreenCanvas(40, 40);
+let offCtx = offCanvas.getContext('2d');
 let printNumbers = false;
+
 level.on('draw', e => {
-    let {ctx} = e;
+    offCanvas.width = 40 * nCols;
+    offCanvas.height = 40 * nRows;
     for (let y = 0; y < nRows; y++) {
         for (let x = 0; x < nCols; x++) {
-            ctx.fillStyle = level.last('color')[`c${grid[y][x]}`];
-            ctx.fillRect(x * 40, y * 40, 40, 40);
+            offCtx.fillStyle = level.last('color')[`c${grid[y][x]}`];
+            offCtx.fillRect(x * 40, y * 40, 40, 40);
         }
     }
+    let {ctx} = e;
+    let bgPattern = ctx.createPattern(offCanvas, 'repeat');
+    ctx.fillStyle = bgPattern;
+    let {vw, vh} = level.last('resize');
+    ctx.fillRect(0, 0, vw, vh);
+
     if (printNumbers) {
         ctx.fillStyle = '#000';
         textTiles.forEach(row => row.forEach(

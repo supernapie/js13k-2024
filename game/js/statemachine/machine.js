@@ -12,6 +12,9 @@ export default (gg) => {
                 state.emit(eType, e);
             };
         });
+        gg.oTypes.forEach(oType => {
+            state.on(oType, gg[oType]);
+        });
         machine.states[name] = state;
         return machine.states[name];
     };
@@ -35,6 +38,7 @@ export default (gg) => {
         gg.eTypes.forEach(eType => {
             gg.on(eType, n[eType]);
         });
+        n['resize'](gg.last('resize'));
     };
     machine.restart = (name) => {
         if (!name || !machine.states[name]){

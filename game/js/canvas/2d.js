@@ -78,6 +78,7 @@ let onF = time => {
 };
 requestAnimationFrame(onF);
 
-let eTypes = ['tap', 'resize', 'color', 'step', 'draw'];
+let eTypes = ['tap', 'resize', 'step', 'draw'];
+let oTypes = ['color'];
 
-export default { on, off, once, emit, last, eTypes };
+export default { on, off, once, emit, last, eTypes, oTypes, color };
