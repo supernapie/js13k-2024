@@ -205,6 +205,7 @@ level.on('start', () => {
     });
 });
 
+let printNumbers = false;
 level.on('draw', e => {
     let {ctx} = e;
     for (let y = 0; y < nRows; y++) {
@@ -213,13 +214,12 @@ level.on('draw', e => {
             ctx.fillRect(x * 40, y * 40, 40, 40);
         }
     }
-/*    textTiles.forEach(row => row.forEach(*/
-        /*tile => {*/
-            /*let colors = level.last('color');*/
-            /*ctx.fillStyle = '#000000';*/
-            /*tile.draw(e);*/
-        /*}*/
-    /*));*/
+    if (printNumbers) {
+        ctx.fillStyle = '#000';
+        textTiles.forEach(row => row.forEach(
+            tile => {tile.draw(e)}
+        ));
+    }
 });
 
 export default level;
