@@ -143,14 +143,6 @@ level.on('start', () => {
     }
     grid[target.y][target.x] = 3;
 
-    // Surround the grid with 2s
-/*    grid = grid.map(row => [2].concat(row, [2]));*/
-    /*grid = [[...Array(nCols + 2).fill(2)]].concat(grid, [[...Array(nCols + 2).fill(2)]]);*/
-    /*nRows = grid.length;*/
-    /*nCols = grid[0].length;*/
-    /*start = {x: start.x + 1, y: start.y + 1};*/
-    /*target = {x: target.x + 1, y: target.y + 1};*/
-
     // Replace with 2s all 0s surrounded by 0s and/or 2s
     // Wrapping around the grid is considered 
     // Diagonal cells are considered
