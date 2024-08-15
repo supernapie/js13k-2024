@@ -138,8 +138,8 @@ level.on('start', () => {
     // Replace with 2s all 0s surrounded by 0s and/or 2s
     // Wrapping around the grid is considered 
     // Diagonal cells are considered
-    grid[start.y][start.x] = 0;
-    grid[target.y][target.x] = 0;
+    //grid[start.y][start.x] = 0; // No pool
+    //grid[target.y][target.x] = 0; // No pool
     for (let y = 0; y < nRows; y++) {
         for (let x = 0; x < nCols; x++) {
             if (grid[y][x] === 0) {
@@ -159,8 +159,10 @@ level.on('start', () => {
         }
     }
 
-    grid[start.y][start.x] = 1;
-    grid[target.y][target.x] = 3;
+    // We will not use a start and target,
+    // instead they became pools
+    grid[start.y][start.x] = 0;
+    grid[target.y][target.x] = 0;
 
     // Update the textTiles
     textTiles = grid.map((row, y) => row.map((value, x) => ft({text: String(value), x: x * 40, y: y * 40})));
@@ -190,7 +192,7 @@ level.on('start', () => {
     });
 });
 
-let printNumbers = true;
+let printNumbers = false;
 level.on('draw', e => {
     let {ctx} = e;
     for (let y = 0; y < nRows; y++) {
