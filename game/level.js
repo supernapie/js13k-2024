@@ -56,6 +56,7 @@ level.on('start', () => {
             grid[newPosition.y][newPosition.x] = nMinoMax;
             // to prevent being closed in by the polyomino
             // only change direction if there is a free cell
+            // To ponder about: does this create all possible polyominos?
             direction = directions[Math.floor(Math.random() * directions.length)];
             nMino++;
         }
@@ -78,17 +79,11 @@ level.on('start', () => {
     nRows = grid.length;
     nCols = grid[0].length;
 
-    // Replace all 13 with -1
-    grid = grid.map(row => row.map(value => value === 13 ? -1 : value));
-
     // Place a 1 where the remaining empty row and column intersect
     // This is the starting point for the player
     let emptyRow = grid.findIndex(row => row.every(value => value === 0));
     let emptyCol = grid[0].findIndex((value, x) => grid.every(row => row[x] === 0));
     let start = {x: emptyCol, y: emptyRow};
-
-    // change everything which isn't -1 to 0
-    grid = grid.map(row => row.map(value => value === -1 ? value : 0));
 
     // Switch rows and columns to make the start point the top left corner
     while (start.y > 0) {
@@ -112,9 +107,6 @@ level.on('start', () => {
 
     let target = {x: nCols - 1, y: nRows - 1};
     grid[target.y][target.x] = 3;
-
-    // Replace all -1 with 13
-    grid = grid.map(row => row.map(value => value === -1 ? 13 : value));
 
     // Move the start and target diagonally closer to each other
     // Until they are adjecent to a 13
@@ -189,6 +181,7 @@ level.on('start', () => {
         }
         if (value === 13) {
             level.off('tap');
+            // show solution
             level.emit('color', {'c0': 'Aqua', 'c1': 'Seashell', 'c2': 'SandyBrown', 'c3': 'Seashell', 'c13': 'Coral'});
             level.once('tap', () => {
                 level.machine.restart('level');
@@ -197,7 +190,7 @@ level.on('start', () => {
     });
 });
 
-let printNumbers = false;
+let printNumbers = true;
 level.on('draw', e => {
     let {ctx} = e;
     for (let y = 0; y < nRows; y++) {
