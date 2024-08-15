@@ -34,11 +34,11 @@ export default (gg) => {
             }
         });
         let n = machine.states[name];
-        n.active = true;
         gg.eTypes.forEach(eType => {
             gg.on(eType, n[eType]);
         });
         n['resize'](gg.last('resize'));
+        n.active = true;
     };
     machine.restart = (name) => {
         if (!name || !machine.states[name]){

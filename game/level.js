@@ -10,7 +10,21 @@ let grid = Array(nRows).fill(0).map(() => Array(nCols).fill(0));
 
 let textTiles = grid.map((row, y) => row.map((value, x) => ft({text: String(value), x: x * 40, y: y * 40})));
 
+let cam = {
+    x: 0, y: 0,
+    offset: {x: 0, y: 0},
+    target: {x: 0, y: 0}
+};
+
 level.on('start', () => {
+
+    let {vw, vh} = level.last('resize');
+    cam.offset.x = -Math.floor(vw / 2);
+    cam.offset.y = -Math.floor(vh / 2);
+    cam.x = -cam.offset.x;
+    cam.y = -cam.offset.y;
+    cam.target.x = cam.x;
+    cam.target.y = cam.y;
 
     nRows = 14;
     nCols = 14;
@@ -171,8 +185,19 @@ level.on('start', () => {
 
     level.on('tap', e => {
         let {x, y} = e;
-        let gx = Math.floor(x / 40) % nCols;
-        let gy = Math.floor(y / 40) % nRows;
+        let {vw, vh} = level.last('resize');
+        let tx = x + cam.x + cam.offset.x;
+        let ty = y + cam.y + cam.offset.y;
+        cam.target.x = tx;
+        cam.target.y = ty;
+        while (tx < 0) {
+            tx += 40 * nCols;
+        }
+        while (ty < 0) {
+            ty += 40 * nRows;
+        }
+        let gx = Math.floor(tx / 40) % nCols;
+        let gy = Math.floor(ty / 40) % nRows;
         if (gx < 0 || gx >= nCols || gy < 0 || gy >= nRows) {
             return;
         }
@@ -197,6 +222,12 @@ let offCtx = offCanvas.getContext('2d');
 let printNumbers = false;
 
 level.on('draw', e => {
+    let {ctx} = e;
+
+    let cx = Math.floor(cam.x + cam.offset.x);
+    let cy = Math.floor(cam.y + cam.offset.y);
+    ctx.translate(-cx, -cy);
+
     offCanvas.width = 40 * nCols;
     offCanvas.height = 40 * nRows;
     for (let y = 0; y < nRows; y++) {
@@ -205,11 +236,10 @@ level.on('draw', e => {
             offCtx.fillRect(x * 40, y * 40, 40, 40);
         }
     }
-    let {ctx} = e;
     let bgPattern = ctx.createPattern(offCanvas, 'repeat');
     ctx.fillStyle = bgPattern;
     let {vw, vh} = level.last('resize');
-    ctx.fillRect(0, 0, vw, vh);
+    ctx.fillRect(cx, cy, vw, vh);
 
     if (printNumbers) {
         ctx.fillStyle = '#000';
@@ -217,6 +247,22 @@ level.on('draw', e => {
             tile => {tile.draw(e)}
         ));
     }
+});
+
+level.on('step', e => {
+    let {dt} = e;
+    let {x, y, target} = cam;
+    let dx = target.x - x;
+    let dy = target.y - y;
+    let speed = 0.005 * dt;
+    cam.x += dx * speed;
+    cam.y += dy * speed;
+});
+
+level.on('resize', e => {
+    let {vw, vh} = e;
+    cam.offset.x = -Math.floor(vw / 2);
+    cam.offset.y = -Math.floor(vh / 2);
 });
 
 export default level;
