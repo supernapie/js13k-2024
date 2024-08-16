@@ -4,12 +4,22 @@ import path from './js/draw/path.js';
 
 let level = state();
 
+let score = 0;
+
+try {
+    score = localStorage.getItem('number_of_tridecomino_coral_reefs_saved_in_2024') || "0";
+    score = Number(score);
+} catch (err) {
+    score = 0;
+    console.warn(err);
+}
+
 // a grid
 let nRows = 14;
 let nCols = 14;
 let grid = Array(nRows).fill(0).map(() => Array(nCols).fill(0));
 
-let textTiles = grid.map((row, y) => row.map((value, x) => ft({text: String(value), x: x * 40, y: y * 40})));
+let textTiles = grid.map((row, y) => row.map((value, x) => ft({text: String(value), x: x * 40, y: y * 40, lineHeight: 2.5})));
 
 let cam = {
     x: 0, y: 0,
@@ -328,8 +338,19 @@ level.on('start', () => {
             level.off('tap');
             // show solution
             level.emit('color', {'c0': 'Aqua', 'c1': 'Aqua', 'c2': 'SandyBrown', 'c3': 'Aqua', 'c13': 'Coral', 'c14': 'Coral'});
+            score++;
+            try {
+                localStorage.setItem(score);
+            } catch (err) {
+                console.warn(err);
+            }
+            textTiles.forEach(row => row.forEach(
+            tile => tile.text = tile.text === "13" ? "#" + score : ""
+            ));
+            printNumbers = true;
             level.once('tap', () => {
                 level.machine.restart('level');
+                printNumbers = false;
             });
         }
     });
@@ -355,17 +376,19 @@ level.on('draw', e => {
         }
     }
     boats.forEach(boat => boat.draw({ctx: offCtx}));
+    
+
+    if (printNumbers) {
+        offCtx.fillStyle = 'Seashell';
+        textTiles.forEach(row => row.forEach(
+            tile => {tile.draw({ctx: offCtx})}
+        ));
+    }
+    
     let bgPattern = ctx.createPattern(offCanvas, 'repeat');
     ctx.fillStyle = bgPattern;
     let {vw, vh} = level.last('resize');
     ctx.fillRect(cx, cy, vw, vh);
-
-    if (printNumbers) {
-        ctx.fillStyle = '#000';
-        textTiles.forEach(row => row.forEach(
-            tile => {tile.draw(e)}
-        ));
-    }
 });
 
 level.on('step', e => {
