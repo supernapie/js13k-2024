@@ -1,10 +1,18 @@
 import state from './js/statemachine/state.js';
 import ft from './js/draw/text.js';
+import d from './d.js';
+import path from './js/draw/path.js';
+import tappable from './js/pointer/rect.js';
+
+console.log(d);
 
 let menu = state();
 
+let boat = path({paths: [d.b], x: 0, y: 0, fills: ['Coral'], w: 40, h: 40});
+tappable(boat);
+
 menu.on('start', () => {
-    menu.once('tap', () => {
+    boat.pointer.once('tap', () => {
         menu.machine.start('level');
     });
 });
@@ -28,9 +36,14 @@ the reef is safe.
 
 Good luck!
 
-Tap anywhere to start...`;
+Tap on the boat to start...`;
 
 let menuText = ft({text: intro});
-menu.on('draw', menuText.draw);
+menu.on('draw', e => {
+menuText.draw(e);
+boat.x = menuText.x;
+boat.y = menuText.h + 40;
+boat.draw(e);
+});
 
 export default menu;
