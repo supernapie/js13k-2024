@@ -26,7 +26,7 @@ White boats are not above the reef.
 If there are no red boats left,
 the reef is safe.
 
-Good luck!`.
+Good luck!`;
 
 let menuText = ft({text: intro});
 menu.on('draw', menuText.draw);
