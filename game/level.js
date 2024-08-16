@@ -1,5 +1,6 @@
 import state from './js/statemachine/state.js';
 import ft from './js/draw/text.js';
+import path from './js/draw/path.js';
 
 let level = state();
 
@@ -15,6 +16,10 @@ let cam = {
     offset: {x: 0, y: 0},
     target: {x: 0, y: 0}
 };
+
+let boatD = 'M28,10C23.46,7.85,11.54,4.43,8,8c-4.22,4.26-4.85,20.46,0,24c4.06,2.96,15.7,0.6,20-2c3.03-1.83,10-7.99,10-10 S31.19,11.51,28,10z M14,29.04V10.74c1.13-0.23,2.54-0.19,4,0.01v18.39C16.55,29.29,15.16,29.27,14,29.04z M25.94,26.9 c-0.51,0.31-1.18,0.61-1.94,0.89V12.26c0.75,0.27,1.42,0.54,1.94,0.79c0.56,0.27,1.29,0.76,2.06,1.36V25.4 C27.22,26.04,26.49,26.57,25.94,26.9z';
+
+let boats = [];
 
 level.on('start', () => {
 
@@ -181,7 +186,70 @@ level.on('start', () => {
     // Update the textTiles
     textTiles = grid.map((row, y) => row.map((value, x) => ft({text: String(value), x: x * 40, y: y * 40})));
 
-    level.emit('color', {'c0': 'Aqua', 'c1': 'Seashell', 'c2': 'SandyBrown', 'c3': 'Seashell', 'c13': 'Aqua'});
+    level.emit('color', {'c0': 'Aqua', 'c1': 'Aqua', 'c2': 'SandyBrown', 'c3': 'Aqua', 'c13': 'Aqua', 'c14': 'Aqua'});
+
+    // on each 0 add a boat
+    let angles = [0, 90, 180, 270];
+    boats = [];
+    for (let y = 0; y < nRows; y++) {
+        for (let x = 0; x < nCols; x++) {
+            if (grid[y][x] === 0) {
+                let angle = angles[Math.floor(Math.random() * angles.length)];
+                let boat = path({paths: [boatD], x: x * 40, y: y * 40, fills: ['Seashell'], w: 40, h: 40, a: angle, gx: x, gy: y});
+                boats.push(boat);
+                grid[y][x] = 1;
+            }
+        }
+    }
+    // Boats can only move backwards or forwards in the direction (angle or a) they are pointing
+    // they cannot move wher there is another boat or a 2 in the grid
+    // they can wrap around the grid
+    // When they are on a 0 they are color Seashell, on a 13 they are color Coral
+    // The player will be able to move a boat with one cell by tapping on it
+    // When a boat is stuck, it will not move, but it will rotate 180 degrees by the tap of the player
+    // When all boats are on a 0, the player wins
+
+    // a zero with a boat on becomes a 1, color Seashell
+    // a 13 with a boat on becomes a 14, color Coral
+
+    // Now move the boats a bit before starting
+    boats.forEach(boat => {
+        let {gx, gy, a} = boat;
+        let dx = Math.round(Math.cos(a * Math.PI / 180));
+        let dy = Math.round(Math.sin(a * Math.PI / 180));
+        let nx = gx + dx;
+        let ny = gy + dy;
+        if (nx < 0) {
+            nx = (nx + nCols) % nCols;
+        }
+        if (nx >= nCols) {
+            nx = nx - nCols;
+        }
+        if (ny < 0) {
+            ny = (ny + nRows) % nRows;
+        }
+        if (ny >= nRows) {
+            ny = ny - nRows;
+        }
+        if (grid[ny][nx] === 0) {
+            boat.x = nx * 40;
+            boat.y = ny * 40;
+            boat.gx = nx;
+            boat.gy = ny;
+            boat.fills = ['Seashell'];
+            grid[ny][nx] = 1;
+            grid[gy][gx] = 0;
+        }
+        if (grid[ny][nx] === 13) {
+            boat.x = nx * 40;
+            boat.y = ny * 40;
+            boat.gx = nx;
+            boat.gy = ny;
+            boat.fills = ['Coral'];
+            grid[ny][nx] = 14;
+            grid[gy][gx] = 0;
+        }
+    });
 
     level.on('tap', e => {
         let {x, y} = e;
@@ -202,14 +270,56 @@ level.on('start', () => {
             return;
         }
         let value = grid[gy][gx];
-        if (value === 0) {
-            grid[gy][gx] = 1;
-            return;
+        if (value === 1 || value === 14) {
+            // find boat and move it
+            let boat = boats.find(boat => boat.gx === gx && boat.gy === gy);
+            let {a} = boat;
+            let dx = Math.round(Math.cos(a * Math.PI / 180));
+            let dy = Math.round(Math.sin(a * Math.PI / 180));
+            let nx = gx + dx;
+            let ny = gy + dy;
+            if (nx < 0) {
+                nx = (nx + nCols) % nCols;
+            }
+            if (nx >= nCols) {
+                nx = nx - nCols;
+            }
+            if (ny < 0) {
+                ny = (ny + nRows) % nRows;
+            }
+            if (ny >= nRows) {
+                ny = ny - nRows;
+            }
+            if (grid[ny][nx] === 0) {
+                boat.x = nx * 40;
+                boat.y = ny * 40;
+                boat.gx = nx;
+                boat.gy = ny;
+                boat.fills = ['Seashell'];
+                grid[ny][nx] = 1;
+                grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
+            } else if (grid[ny][nx] === 13) {
+                boat.x = nx * 40;
+                boat.y = ny * 40;
+                boat.gx = nx;
+                boat.gy = ny;
+                boat.fills = ['Coral'];
+                grid[ny][nx] = 14;
+                grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
+            } else {
+                // rotate the boat 180 degrees
+                boat.a += 180;
+            }
         }
-        if (value === 13) {
+        if (value === 14) {
+            // check if there are no boats left on the coral reef
+            // if so, the player wins
+            if (grid.flat().includes(14)) {
+                return;
+            }
             level.off('tap');
             // show solution
-            level.emit('color', {'c0': 'Aqua', 'c1': 'Seashell', 'c2': 'SandyBrown', 'c3': 'Seashell', 'c13': 'Coral'});
+            level.emit('color', {'c0': 'Aqua', 'c1': 'Aqua', 'c2': 'SandyBrown', 'c3': 'Aqua', 'c13': 'Coral', 'c14': 'Coral'});
             level.once('tap', () => {
                 level.machine.restart('level');
             });
@@ -236,6 +346,7 @@ level.on('draw', e => {
             offCtx.fillRect(x * 40, y * 40, 40, 40);
         }
     }
+    boats.forEach(boat => boat.draw({ctx: offCtx}));
     let bgPattern = ctx.createPattern(offCanvas, 'repeat');
     ctx.fillStyle = bgPattern;
     let {vw, vh} = level.last('resize');
