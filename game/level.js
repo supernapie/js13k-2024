@@ -340,7 +340,7 @@ level.on('start', () => {
             level.emit('color', {'c0': 'Aqua', 'c1': 'Aqua', 'c2': 'SandyBrown', 'c3': 'Aqua', 'c13': 'Coral', 'c14': 'Coral'});
             score++;
             try {
-                localStorage.setItem(score);
+                localStorage.setItem('number_of_tridecomino_coral_reefs_saved_in_2024', score);
             } catch (err) {
                 console.warn(err);
             }
