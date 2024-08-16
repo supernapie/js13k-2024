@@ -256,12 +256,12 @@ level.on('start', () => {
         let {vw, vh} = level.last('resize');
         let tx = x + cam.x + cam.offset.x;
         let ty = y + cam.y + cam.offset.y;
-        if (x < 80 || x > vw - 80) {
-            cam.target.x = tx;
-        }
-        if (y < 80 || y > vh - 80) {
-            cam.target.y = ty;
-        }
+        //if (x < 80 || x > vw - 80) {
+        //    cam.target.x = tx;
+        //}
+        //if (y < 80 || y > vh - 80) {
+        //    cam.target.y = ty;
+        //}
         while (tx < 0) {
             tx += 40 * nCols;
         }
@@ -295,6 +295,8 @@ level.on('start', () => {
                 ny = ny - nRows;
             }
             if (grid[ny][nx] === 0) {
+                cam.target.x += dx * 40;
+                cam.target.y += dy * 40;
                 boat.x = nx * 40;
                 boat.y = ny * 40;
                 boat.gx = nx;
@@ -303,6 +305,8 @@ level.on('start', () => {
                 grid[ny][nx] = 1;
                 grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
             } else if (grid[ny][nx] === 13) {
+                cam.target.x += dx * 40;
+                cam.target.y += dy * 40;
                 boat.x = nx * 40;
                 boat.y = ny * 40;
                 boat.gx = nx;
