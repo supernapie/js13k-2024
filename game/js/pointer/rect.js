@@ -1,4 +1,8 @@
+import css from '../css.js';
+css`body.p canvas{cursor:pointer;}`;
+
 import events from '../events.js';
+
 export default (options = {}) => {
     let defaults = {
         x: 0,
@@ -50,14 +54,14 @@ export default (options = {}) => {
         ) {
             if (!options.pointer.pointing) {
                 emit('startpointing', {x, y});
-                document.body.classList.add('pointing');
+                document.body.classList.add('p');
             }
             emit('move', {x, y});
             options.pointer.pointing = true;
         } else {
             if (options.pointer.pointing) {
                 emit('stoppointing', {x, y});
-                document.body.classList.remove('pointing');
+                document.body.classList.remove('p');
             }
             options.pointer.pointing = false;
         }
