@@ -1,3 +1,4 @@
+import machine from './js/statemachine/machine.js';
 import state from './js/statemachine/state.js';
 import ft from './js/draw/text.js';
 import d from './d.js';
@@ -342,7 +343,7 @@ level.on('start', () => {
             ));
             printNumbers = true;
             level.once('tap', () => {
-                level.machine.restart('level');
+                machine.start('level');
                 printNumbers = false;
             });
         }
@@ -370,7 +371,6 @@ level.on('draw', e => {
     }
     boats.forEach(boat => boat.draw({ctx: offCtx}));
     
-
     if (printNumbers) {
         offCtx.fillStyle = 'Seashell';
         textTiles.forEach(row => row.forEach(

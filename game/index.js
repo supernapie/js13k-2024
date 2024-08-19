@@ -8,6 +8,5 @@ import menu from './menu.js';
 
 gg.emit('color', { stroke: 'Coral', fill: 'Coral', bg: 'Aqua' });
 
-let screens = machine(gg);
-screens.add('menu', menu);
-screens.add('level', level);
+machine.add('menu', menu);
+machine.add('level', level);

@@ -1,3 +1,4 @@
+import machine from './js/statemachine/machine.js';
 import state from './js/statemachine/state.js';
 import ft from './js/draw/text.js';
 import d from './d.js';
@@ -11,7 +12,7 @@ tappable(boat);
 
 menu.on('start', () => {
     boat.pointer.once('tap', () => {
-        menu.machine.start('level');
+        machine.start('level');
     });
 });
 
