@@ -1,8 +1,7 @@
 import machine from './js/statemachine/machine.js';
 import state from './js/statemachine/state.js';
 import ft from './js/draw/text.js';
-import d from './d.js';
-import path from './js/draw/path.js';
+import createBoat from './boat.js';
 
 let level = state();
 
@@ -205,7 +204,7 @@ level.on('start', () => {
         for (let x = 0; x < nCols; x++) {
             if (grid[y][x] === 0) {
                 let angle = angles[Math.floor(Math.random() * angles.length)];
-                let boat = path({paths: [d.b], x: x * 40, y: y * 40, fills: ['Seashell'], w: 40, h: 40, a: angle, gx: x, gy: y});
+                let boat = createBoat({x: x * 40, y: y * 40, a: angle, gx: x, gy: y});
                 boats.push(boat);
                 grid[y][x] = 1;
             }
@@ -246,19 +245,18 @@ level.on('start', () => {
             boat.y = ny * 40;
             boat.gx = nx;
             boat.gy = ny;
-            boat.fills = ['Seashell'];
             grid[ny][nx] = 1;
-            grid[gy][gx] = 0;
+            grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
         }
         if (grid[ny][nx] === 13) {
             boat.x = nx * 40;
             boat.y = ny * 40;
             boat.gx = nx;
             boat.gy = ny;
-            boat.fills = ['Coral'];
             grid[ny][nx] = 14;
-            grid[gy][gx] = 0;
+            grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
         }
+        boat.fills = grid[boat.gy][boat.gx] === 14 ? ['Coral'] : ['Seashell'];
     });
 
     level.on('tap', e => {
@@ -305,7 +303,6 @@ level.on('start', () => {
                 boat.y = ny * 40;
                 boat.gx = nx;
                 boat.gy = ny;
-                boat.fills = ['Seashell'];
                 grid[ny][nx] = 1;
                 grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
             } else if (grid[ny][nx] === 13) {
@@ -315,13 +312,13 @@ level.on('start', () => {
                 boat.y = ny * 40;
                 boat.gx = nx;
                 boat.gy = ny;
-                boat.fills = ['Coral'];
                 grid[ny][nx] = 14;
                 grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
             } else {
                 // rotate the boat 180 degrees
                 boat.a += 180;
             }
+            boat.fills = grid[boat.gy][boat.gx] === 14 ? ['Coral'] : ['Seashell'];
         }
         if (value === 14) {
             // check if there are no boats left on the coral reef

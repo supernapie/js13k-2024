@@ -1,13 +1,12 @@
 import machine from './js/statemachine/machine.js';
 import state from './js/statemachine/state.js';
 import ft from './js/draw/text.js';
-import d from './d.js';
-import path from './js/draw/path.js';
+import createBoat from './boat.js';
 import tappable from './js/pointer/rect.js';
 
 let menu = state();
 
-let boat = path({paths: [d.b], x: 0, y: 0, fills: ['Coral'], w: 40, h: 40});
+let boat = createBoat();
 tappable(boat);
 
 menu.on('start', () => {
