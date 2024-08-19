@@ -265,12 +265,6 @@ level.on('start', () => {
         let {vw, vh} = level.last('resize');
         let tx = x + cam.x + cam.offset.x;
         let ty = y + cam.y + cam.offset.y;
-        //if (x < 80 || x > vw - 80) {
-        //    cam.target.x = tx;
-        //}
-        //if (y < 80 || y > vh - 80) {
-        //    cam.target.y = ty;
-        //}
         while (tx < 0) {
             tx += 40 * nCols;
         }
