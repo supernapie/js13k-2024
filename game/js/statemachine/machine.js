@@ -1,6 +1,9 @@
 import canvas from '../canvas/2d.js';
 import createState from './state.js';
 
+let eTypes = ['tap', 'resize', 'step', 'draw'];
+let oTypes = ['color'];
+
 let states = {};
 
 let add = (name, state) => {
@@ -10,13 +13,15 @@ let add = (name, state) => {
     if (!state) {
         state = createState();
     }
-    canvas.eTypes.forEach(eType => {
+    eTypes.forEach(eType => {
         state[eType] = e => {
             state.emit(eType, e);
         };
     });
-    canvas.oTypes.forEach(oType => {
-        state.on(oType, canvas[oType]);
+    oTypes.forEach(oType => {
+        canvas[oType] = e => {
+            canvas.emit(oType, e);
+        };
     });
     states[name] = state;
     if (Object.keys(states).length === 1) {
@@ -32,14 +37,20 @@ let start = (name) => {
     Object.values(states).forEach((s) => {
         if (s.active) {
             s.active = false;
-            canvas.eTypes.forEach(eType => {
+            eTypes.forEach(eType => {
                 canvas.off(eType, s[eType]);
+            });
+            oTypes.forEach(oType => {
+                s.off(oType, canvas[oType]);
             });
         }
     });
     let n = states[name];
-    canvas.eTypes.forEach(eType => {
+    eTypes.forEach(eType => {
         canvas.on(eType, n[eType]);
+    });
+    oTypes.forEach(oType => {
+        n.on(oType, canvas[oType]);
     });
     n['resize'](canvas.last('resize'));
     n.active = true;
