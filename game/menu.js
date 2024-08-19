@@ -10,6 +10,7 @@ let boat = createBoat();
 tappable(boat);
 
 menu.on('start', () => {
+    menu.emit('color', { stroke: 'Coral', fill: 'Coral', bg: 'Aqua' });
     boat.pointer.once('tap', () => {
         machine.start('level');
     });

@@ -29,13 +29,15 @@ emit('resize', {
     vc: window.devicePixelRatio || 1
 });
 
-let color = e => {
+on('color', e => {
     let {fill, stroke} = e;
     ctx.fillStyle = fill;
     ctx.strokeStyle = stroke;
+});
+let color = e => {
+    emit('color', e);
 };
-on('color', color);
-emit('color', { bg: 'black', fill: 'white', stroke: 'white' });
+color({ bg: 'black', fill: 'white', stroke: 'white' });
 
 let clear = e => {
     let {ctx} = e;
