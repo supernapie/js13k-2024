@@ -1,10 +1,15 @@
+import createState from './state.js';
+
 export default (gg) => {
     let machine = {
         states: {}
     };
     machine.add = (name, state) => {
-        if (!name || !state){
+        if (!name){
             return;
+        }
+        if (!state) {
+            state = createState();
         }
         state.machine = machine;
         gg.eTypes.forEach(eType => {
@@ -16,6 +21,11 @@ export default (gg) => {
             state.on(oType, gg[oType]);
         });
         machine.states[name] = state;
+        if (Object.keys(
+            machine.states
+        ).length === 1) {
+            machine.start(name);
+        }
         return machine.states[name];
     };
     machine.start = (name) => {

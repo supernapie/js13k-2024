@@ -11,4 +11,3 @@ gg.emit('color', { stroke: 'Coral', fill: 'Coral', bg: 'Aqua' });
 let screens = machine(gg);
 screens.add('menu', menu);
 screens.add('level', level);
-screens.start('menu');
