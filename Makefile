@@ -1,6 +1,6 @@
 count:
 	@rm -rf g.zip dist/ .parcel-cache/
-	@npx eslint
+	@npx eslint --fix
 	@npx parcel build game/index.html --no-source-maps
 	@cd dist/ && zip ../g.zip index.html
 	@cd ..

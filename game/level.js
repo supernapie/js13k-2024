@@ -8,7 +8,7 @@ let level = state();
 let score = 0;
 
 try {
-    score = localStorage.getItem('number_of_tridecomino_coral_reefs_saved_in_2024') || "0";
+    score = localStorage.getItem('number_of_tridecomino_coral_reefs_saved_in_2024') || '0';
     score = Number(score);
 } catch (err) {
     score = 0;
@@ -265,7 +265,7 @@ level.on('start', () => {
                 console.warn(err);
             }
             textTiles.forEach(row => row.forEach(
-            tile => tile.text = tile.text === "13" ? "#" + score : ""
+            tile => tile.text = tile.text === '13' ? '#' + score : ''
             ));
             printNumbers = true;
             level.once('tap', () => {

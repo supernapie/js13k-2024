@@ -3,7 +3,7 @@ export default (options) => {
         text: '',
         x: 16,
         y: 16,
-        font: `16px sans-serif`,
+        font: '16px sans-serif',
         lineHeight: 1.5,
         w: 0,
         h: 24
