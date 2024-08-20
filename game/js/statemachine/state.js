@@ -1,9 +1,7 @@
 import events from '../events.js';
 export default () => {
     let active = false;
-    let {on, off, once, emit, last} = events();
     let state = {
-        on, off, once, emit, last,
         get active() {
             return active;
         },
@@ -16,11 +14,6 @@ export default () => {
             }
         }
     };
-    let eTypes = ['start', 'stop'];
-    eTypes.forEach(eType => {
-        state[eType] = e => {
-            state.emit(eType, e);
-        };
-    });
+    events(state, ['start', 'stop']);
     return state;
 };

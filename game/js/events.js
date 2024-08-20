@@ -1,15 +1,15 @@
-export default () => {
+export default (obj = {}, eTypes = []) => {
 
     let listeners = {};
 
-    let on = (type, callback) => {
+    obj.on = (type, callback) => {
         if (!listeners[type]) {
             listeners[type] = [];
         }
         listeners[type].push(callback);
     };
 
-    let off = (type, callback) => {
+    obj.off = (type, callback) => {
         if (!type && !callback) {
             listeners = {};
             return;
@@ -29,17 +29,17 @@ export default () => {
         }
     };
 
-    let once = (type, callback) => {
+    obj.once = (type, callback) => {
         let disposableCallback = e => {
             callback(e);
-            off(type, disposableCallback);
+            obj.off(type, disposableCallback);
         };
-        on(type, disposableCallback);
+        obj.on(type, disposableCallback);
     };
 
     let lastEmission = {};
 
-    let emit = (type, e = {}) => {
+    obj.emit = (type, e = {}) => {
         if (lastEmission[type]) {
             Object.assign(lastEmission[type], e);
         } else {
@@ -50,12 +50,18 @@ export default () => {
         }
     };
 
-    let last = (type) => {
+    obj.last = (type) => {
         if (!lastEmission[type]) {
             return {};
         }
         return lastEmission[type];
     };
 
-    return {on, off, once, emit, last};
+    eTypes.forEach(eType => {
+        obj[eType] = e => {
+            obj.emit(eType, e);
+        };
+    });
+
+    return obj;
 };
