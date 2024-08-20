@@ -27,6 +27,7 @@ let add = (name, state) => {
     if (Object.keys(states).length === 1) {
         start(name);
     }
+    state.on('stop', start);
     return states[name];
 };
 

@@ -1,4 +1,3 @@
-import machine from './js/statemachine/machine.js';
 import state from './js/statemachine/state.js';
 import ft from './js/draw/text.js';
 import createBoat from './boat.js';
@@ -269,7 +268,7 @@ level.on('start', () => {
             ));
             printNumbers = true;
             level.once('tap', () => {
-                machine.start('level');
+                level.stop('level');
                 printNumbers = false;
             });
         }
