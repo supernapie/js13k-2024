@@ -17,5 +17,43 @@ export default (options = {}) => {
     Object.assign(defaults, options);
     Object.assign(options, defaults);
     let boat = path(options);
+    boat.move = (grid, allowRotation = true) => {
+        let nRows = grid.length;
+        let nCols = grid[0].length;
+        let {gx, gy, a} = boat;
+        let dx = Math.round(Math.cos(a * Math.PI / 180));
+        let dy = Math.round(Math.sin(a * Math.PI / 180));
+        let nx = gx + dx;
+        let ny = gy + dy;
+        if (nx < 0) {
+            nx = (nx + nCols) % nCols;
+        }
+        if (nx >= nCols) {
+            nx = nx - nCols;
+        }
+        if (ny < 0) {
+            ny = (ny + nRows) % nRows;
+        }
+        if (ny >= nRows) {
+            ny = ny - nRows;
+        }
+        if (grid[ny][nx] === 0 || grid[ny][nx] === 13) {
+            boat.x = nx * 40;
+            boat.y = ny * 40;
+            boat.gx = nx;
+            boat.gy = ny;
+            grid[ny][nx] += 1;
+            grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
+        } else if (allowRotation) {
+            boat.a += 180;
+            return boat.move(grid, false);
+        } else {
+            // boat is stuck
+            dx = 0;
+            dy = 0;
+        }
+        boat.fills = grid[boat.gy][boat.gx] === 14 ? ['Coral'] : ['Seashell'];
+        return {dx, dy};
+    };
     return boat;
 };

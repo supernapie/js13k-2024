@@ -211,7 +211,7 @@ level.on('start', () => {
         }
     }
     // Boats can only move backwards or forwards in the direction (angle or a) they are pointing
-    // they cannot move wher there is another boat or a 2 in the grid
+    // they cannot move where there is another boat or a 2 in the grid
     // they can wrap around the grid
     // When they are on a 0 they are color Seashell, on a 13 they are color Coral
     // The player will be able to move a boat with one cell by tapping on it
@@ -222,46 +222,10 @@ level.on('start', () => {
     // a 13 with a boat on becomes a 14, color Coral
 
     // Now move the boats a bit before starting
-    boats.forEach(boat => {
-        let {gx, gy, a} = boat;
-        let dx = Math.round(Math.cos(a * Math.PI / 180));
-        let dy = Math.round(Math.sin(a * Math.PI / 180));
-        let nx = gx + dx;
-        let ny = gy + dy;
-        if (nx < 0) {
-            nx = (nx + nCols) % nCols;
-        }
-        if (nx >= nCols) {
-            nx = nx - nCols;
-        }
-        if (ny < 0) {
-            ny = (ny + nRows) % nRows;
-        }
-        if (ny >= nRows) {
-            ny = ny - nRows;
-        }
-        if (grid[ny][nx] === 0) {
-            boat.x = nx * 40;
-            boat.y = ny * 40;
-            boat.gx = nx;
-            boat.gy = ny;
-            grid[ny][nx] = 1;
-            grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
-        }
-        if (grid[ny][nx] === 13) {
-            boat.x = nx * 40;
-            boat.y = ny * 40;
-            boat.gx = nx;
-            boat.gy = ny;
-            grid[ny][nx] = 14;
-            grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
-        }
-        boat.fills = grid[boat.gy][boat.gx] === 14 ? ['Coral'] : ['Seashell'];
-    });
+    boats.forEach(boat => boat.move(grid));
 
     level.on('tap', e => {
         let {x, y} = e;
-        let {vw, vh} = level.last('resize');
         let tx = x + cam.x + cam.offset.x;
         let ty = y + cam.y + cam.offset.y;
         while (tx < 0) {
@@ -279,46 +243,11 @@ level.on('start', () => {
         if (value === 1 || value === 14) {
             // find boat and move it
             let boat = boats.find(boat => boat.gx === gx && boat.gy === gy);
-            let {a} = boat;
-            let dx = Math.round(Math.cos(a * Math.PI / 180));
-            let dy = Math.round(Math.sin(a * Math.PI / 180));
-            let nx = gx + dx;
-            let ny = gy + dy;
-            if (nx < 0) {
-                nx = (nx + nCols) % nCols;
-            }
-            if (nx >= nCols) {
-                nx = nx - nCols;
-            }
-            if (ny < 0) {
-                ny = (ny + nRows) % nRows;
-            }
-            if (ny >= nRows) {
-                ny = ny - nRows;
-            }
-            if (grid[ny][nx] === 0) {
+            if (boat) {
+                let {dx, dy} = boat.move(grid);
                 cam.target.x += dx * 40;
                 cam.target.y += dy * 40;
-                boat.x = nx * 40;
-                boat.y = ny * 40;
-                boat.gx = nx;
-                boat.gy = ny;
-                grid[ny][nx] = 1;
-                grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
-            } else if (grid[ny][nx] === 13) {
-                cam.target.x += dx * 40;
-                cam.target.y += dy * 40;
-                boat.x = nx * 40;
-                boat.y = ny * 40;
-                boat.gx = nx;
-                boat.gy = ny;
-                grid[ny][nx] = 14;
-                grid[gy][gx] = grid[gy][gx] === 14 ? 13 : 0;
-            } else {
-                // rotate the boat 180 degrees
-                boat.a += 180;
             }
-            boat.fills = grid[boat.gy][boat.gx] === 14 ? ['Coral'] : ['Seashell'];
         }
         if (value === 14) {
             // check if there are no boats left on the coral reef
