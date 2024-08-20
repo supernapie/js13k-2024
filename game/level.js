@@ -1,6 +1,7 @@
 import state from './js/statemachine/state.js';
 import ft from './js/draw/text.js';
 import createBoat from './boat.js';
+import createCam from './js/cam.js';
 
 let level = state();
 
@@ -21,23 +22,14 @@ let grid = Array(nRows).fill(0).map(() => Array(nCols).fill(0));
 
 let textTiles = grid.map((row, y) => row.map((value, x) => ft({text: String(value), x: x * 40, y: y * 40, lineHeight: 2.5})));
 
-let cam = {
-    x: 0, y: 0,
-    offset: {x: 0, y: 0},
-    target: {x: 0, y: 0}
-};
+let cam = createCam();
 
 let boats = [];
 
 level.on('start', () => {
 
     let {vw, vh} = level.last('resize');
-    cam.offset.x = -Math.floor(vw / 2);
-    cam.offset.y = -Math.floor(vh / 2);
-    cam.x = -cam.offset.x;
-    cam.y = -cam.offset.y;
-    cam.target.x = cam.x;
-    cam.target.y = cam.y;
+    cam.start({vw, vh});
 
     nRows = 14;
     nCols = 14;
@@ -225,8 +217,8 @@ level.on('start', () => {
 
     level.on('tap', e => {
         let {x, y} = e;
-        let tx = x + cam.x + cam.offset.x;
-        let ty = y + cam.y + cam.offset.y;
+        let tx = x + cam.cx;
+        let ty = y + cam.cy;
         while (tx < 0) {
             tx += 40 * nCols;
         }
@@ -275,16 +267,16 @@ level.on('start', () => {
     });
 });
 
+level.on('resize', cam.resize);
+level.on('step', cam.step);
+
 let offCanvas = new OffscreenCanvas(40, 40);
 let offCtx = offCanvas.getContext('2d');
 let printNumbers = false;
 
 level.on('draw', e => {
     let {ctx} = e;
-
-    let cx = Math.floor(cam.x + cam.offset.x);
-    let cy = Math.floor(cam.y + cam.offset.y);
-    ctx.translate(-cx, -cy);
+    let {vw, vh} = level.last('resize');
 
     offCanvas.width = 40 * nCols;
     offCanvas.height = 40 * nRows;
@@ -305,24 +297,8 @@ level.on('draw', e => {
     
     let bgPattern = ctx.createPattern(offCanvas, 'repeat');
     ctx.fillStyle = bgPattern;
-    let {vw, vh} = level.last('resize');
-    ctx.fillRect(cx, cy, vw, vh);
-});
-
-level.on('step', e => {
-    let {dt} = e;
-    let {x, y, target} = cam;
-    let dx = target.x - x;
-    let dy = target.y - y;
-    let speed = 0.005 * dt;
-    cam.x += dx * speed;
-    cam.y += dy * speed;
-});
-
-level.on('resize', e => {
-    let {vw, vh} = e;
-    cam.offset.x = -Math.floor(vw / 2);
-    cam.offset.y = -Math.floor(vh / 2);
+    ctx.translate(-cam.cx, -cam.cy);
+    ctx.fillRect(cam.cx, cam.cy, vw, vh);
 });
 
 export default level;
