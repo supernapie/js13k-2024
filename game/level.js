@@ -93,13 +93,13 @@ level.on('start', () => {
 
     // remove all rows and columns that are empty, and have adjacent empty rows or columns
     // remove rows
-    grid = grid.filter((row, y) => row.some((value, x) => {
-        return value !== 0 || grid[(y + 1) % nRows].some((value, x) => value !== 0);
+    grid = grid.filter((row, y) => row.some((valueA) => {
+        return valueA !== 0 || grid[(y + 1) % nRows].some((valueB) => valueB !== 0);
     }));
     // remove columns
     let emptyCols = Array(nCols).fill(0);
     emptyCols = emptyCols.map((value, x) => grid.every(row => row[x] === 0));
-    grid = grid.map((row, y) => row.filter((value, x) => {
+    grid = grid.map((row) => row.filter((value, x) => {
         return value !== 0 || !emptyCols[x] || !emptyCols[(x + 1) % nCols];
     }));
 
@@ -242,7 +242,7 @@ level.on('start', () => {
         let value = grid[gy][gx];
         if (value === 1 || value === 14) {
             // find boat and move it
-            let boat = boats.find(boat => boat.gx === gx && boat.gy === gy);
+            let boat = boats.find(b => b.gx === gx && b.gy === gy);
             if (boat) {
                 let {dx, dy} = boat.move(grid);
                 cam.target.x += dx * 40;

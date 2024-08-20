@@ -31,9 +31,7 @@ on('color', e => {
 });
 emit('color', { bg: 'black', fill: 'white', stroke: 'white' });
 
-on('clear', e => {
-    let {ctx} = e;
-
+on('clear', () => {
     ctx.restore();
     ctx.save();
 
@@ -69,7 +67,7 @@ let onF = time => {
     dt = time - t;
     t = time;
     emit('step', {t, dt});
-    emit('clear', {ctx});
+    emit('clear');
     emit('draw', {ctx});
     requestAnimationFrame(onF);
 };

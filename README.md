@@ -17,3 +17,7 @@ https://puzzlewillbeplayed.com/Polyominoes/13-omino.html
 https://www.puzzle-nurikabe.com/
 
 https://en.wikipedia.org/wiki/Web_colors
+
+## Byte count progress
+
+-     4269 / 13312
