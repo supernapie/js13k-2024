@@ -3,17 +3,17 @@ css`body.p canvas{cursor:pointer;}`;
 
 import events from '../events.js';
 
-export default (options = {}) => {
+export default (obj = {}) => {
     let defaults = {
         x: 0,
         y: 0,
         w: 40,
         h: 40
     };
-    Object.assign(defaults, options);
-    Object.assign(options, defaults);
+    Object.assign(defaults, obj);
+    Object.assign(obj, defaults);
     let {on, off, once, emit, last} = events();
-    options.pointer = {
+    obj.pointer = {
         on,
         off,
         once,
@@ -24,47 +24,47 @@ export default (options = {}) => {
     };
     window.addEventListener('pointerdown', e => {
         let { clientX: x, clientY: y } = e;
-        if (x > options.x &&
-            x < options.x + options.w &&
-            y > options.y &&
-            y < options.y + options.h
+        if (x > obj.x &&
+            x < obj.x + obj.w &&
+            y > obj.y &&
+            y < obj.y + obj.h
         ) {
             emit('down', {x, y});
-            options.pointer.down = true;
+            obj.pointer.down = true;
         }
     });
     window.addEventListener('pointerup', e => {
         let { clientX: x, clientY: y } = e;
-        if (x > options.x &&
-            x < options.x + options.w &&
-            y > options.y &&
-            y < options.y + options.h
+        if (x > obj.x &&
+            x < obj.x + obj.w &&
+            y > obj.y &&
+            y < obj.y + obj.h
         ) {
             emit('tap', {x, y});
             emit('up', {x, y});
         }
-        options.pointer.down = false;
+        obj.pointer.down = false;
     });
     window.addEventListener('pointermove', e => {
         let { clientX: x, clientY: y } = e;
-        if (x > options.x &&
-            x < options.x + options.w &&
-            y > options.y &&
-            y < options.y + options.h
+        if (x > obj.x &&
+            x < obj.x + obj.w &&
+            y > obj.y &&
+            y < obj.y + obj.h
         ) {
-            if (!options.pointer.pointing) {
+            if (!obj.pointer.pointing) {
                 emit('startpointing', {x, y});
                 document.body.classList.add('p');
             }
             emit('move', {x, y});
-            options.pointer.pointing = true;
+            obj.pointer.pointing = true;
         } else {
-            if (options.pointer.pointing) {
+            if (obj.pointer.pointing) {
                 emit('stoppointing', {x, y});
                 document.body.classList.remove('p');
             }
-            options.pointer.pointing = false;
+            obj.pointer.pointing = false;
         }
     });
-    return options;
+    return obj;
 };

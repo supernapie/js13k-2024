@@ -1,4 +1,4 @@
-export default (options = {}) => {
+export default (obj = {}) => {
     let ow = 0; // original width
     let oh = 0; // original height
     let defaults = {
@@ -10,13 +10,13 @@ export default (options = {}) => {
         h: 40,
         a: 0, // 0-360
     };
-    Object.assign(defaults, options);
-    Object.assign(options, defaults);
-    ow = options.w;
-    oh = options.h;
-    options.draw = e => {
+    Object.assign(defaults, obj);
+    Object.assign(obj, defaults);
+    ow = obj.w;
+    oh = obj.h;
+    obj.draw = e => {
         let { ctx } = e;
-        let { paths, fills, x, y, w, h, a } = options;
+        let { paths, fills, x, y, w, h, a } = obj;
         let rad = a * Math.PI / 180;
         let cx = w / ow;
         let cy = h / oh;
@@ -42,5 +42,5 @@ export default (options = {}) => {
             ctx.fill(p);
         });
     };
-    return options;
+    return obj;
 };
