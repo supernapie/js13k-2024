@@ -40,8 +40,8 @@ export default (obj = {}, eTypes = []) => {
     let lastEmission = {};
 
     obj.emit = (type, e = {}) => {
-        if (lastEmission[type]) {
-            Object.assign(lastEmission[type], e);
+        if (lastEmission[type] && typeof lastEmission[type] === 'object') {
+                Object.assign(lastEmission[type], e);
         } else {
             lastEmission[type] = e;
         }
