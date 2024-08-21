@@ -14,11 +14,13 @@ The Tridecomino Coral Reef
 
 ## Inspiration
 
-https://puzzlewillbeplayed.com/Polyominoes/13-omino.html
+[https://puzzlewillbeplayed.com/Polyominoes/13-omino.html](https://puzzlewillbeplayed.com/Polyominoes/13-omino.html)
 
-https://www.puzzle-nurikabe.com/
+[https://www.puzzle-nurikabe.com/](https://www.puzzle-nurikabe.com/)
 
-https://en.wikipedia.org/wiki/Web_colors
+[https://en.wikipedia.org/wiki/Web_colors](https://en.wikipedia.org/wiki/Web_colors)
+
+[https://adamatomic.itch.io/kyst](https://adamatomic.itch.io/kyst) Already tried something 3 years ago [https://github.com/Quinten/kyst](https://github.com/Quinten/kyst). Never finished it. Sorry, Adam.
 
 ## Byte count progress
 
