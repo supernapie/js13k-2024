@@ -2,7 +2,9 @@ import css from '../css.js';
 css`body{margin:0;padding:0;overflow:hidden;}canvas{display:block;touch-action:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}`;
 
 import events from '../events.js';
-let {on, off, once, emit, last} = events();
+
+let obj = events({}, ['color']);
+let {on, emit, last} = obj;
 
 let canvas = document.createElement('canvas');
 let ctx = canvas.getContext('2d');
@@ -73,4 +75,4 @@ let onF = time => {
 };
 requestAnimationFrame(onF);
 
-export default { on, off, once, emit, last };
+export default obj;

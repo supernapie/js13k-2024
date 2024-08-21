@@ -63,5 +63,14 @@ export default (obj = {}, eTypes = []) => {
         };
     });
 
+    obj.syncOn = other => {
+        eTypes.forEach(
+        eType => other.on(eType, obj[eType]));
+    };
+
+    obj.syncOff = other => eTypes.forEach(
+        eType => other.off(eType, obj[eType])
+    );
+
     return obj;
 };

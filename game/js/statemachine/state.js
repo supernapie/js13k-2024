@@ -14,6 +14,6 @@ export default () => {
             }
         }
     };
-    events(state, ['start', 'stop']);
+    events(state, ['start', 'stop','tap', 'resize', 'step', 'draw']);
     return state;
 };
