@@ -1,5 +1,7 @@
 # js14-1k-2024
 
+Game for [js13k jam 2024](https://js13kgames.com/)
+
 Theme: Triskaidekaphobia `fear or avoidance of the number before 14`
 
 ## TL;DR
