@@ -8,4 +8,4 @@ count:
 	@mv dist/index.html /tmp/index.html
 	@open /tmp/index.html
 	@rm -rf dist/ .parcel-cache/
-	@rm -rf g.zip
+	#@rm -rf g.zip
